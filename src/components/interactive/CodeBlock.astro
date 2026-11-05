@@ -1,0 +1,149 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Text to show and copy. */
+  code?: string;
+  /** Title above the code, such as a file path. Defaults to `Terminal` for a command. */
+  label?: string;
+  /** Code kind. A command shows a prompt and keeps to one line of text. */
+  variant?: "command" | "plain";
+};
+
+const {
+  render = true,
+  code,
+  label,
+  variant = "command",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const title = label ?? (variant === "command" ? "Terminal" : undefined);
+---
+
+{render && code && (
+  <div
+    class:list={[
+      "code-block_wrap",
+      variant !== "command" && variant,
+      className,
+    ]}
+    {...rest}
+  >
+    <div class="code-block_bar">
+      <p class="code-block_label text-style-small">{title}</p>
+      <button class="code-block_copy text-style-small" type="button" hidden>
+        Copy
+      </button>
+    </div>
+    <pre class="code-block_pre"><code class="code-block_code">{code}</code></pre>
+    <span class="sr-only" role="status"></span>
+  </div>
+)}
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".code-block_wrap")
+    .forEach((block) => {
+      const button = block.querySelector<HTMLButtonElement>(".code-block_copy");
+      const code = block.querySelector<HTMLElement>(".code-block_code");
+      const status = block.querySelector<HTMLElement>("[role=status]");
+      if (!button || !code) return;
+
+      let timer = 0;
+      button.hidden = false;
+
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code.textContent ?? "");
+        } catch {
+          window.getSelection()?.selectAllChildren(code);
+          return;
+        }
+        button.textContent = "Copied";
+        if (status) status.textContent = "Copied to clipboard";
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          button.textContent = "Copy";
+          if (status) status.textContent = "";
+        }, 2000);
+      });
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .code-block_wrap {
+      width: 100%;
+      background-color: var(--background-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      overflow: clip;
+      text-align: start;
+    }
+
+    .code-block_bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      min-height: 3.25rem;
+      padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .code-block_label {
+      min-width: 0;
+      color: var(--text-2);
+      font-family: var(--mono-family);
+      overflow-wrap: anywhere;
+    }
+
+    .code-block_copy {
+      flex: none;
+      padding: 0.6em 1em;
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease),
+        border-color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--text);
+          color: var(--background);
+          border-color: var(--text);
+        }
+      }
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .code-block_pre {
+      margin: 0;
+      padding: var(--space-4);
+      overflow-x: auto;
+      font-family: var(--mono-family);
+      font-size: var(--text-small);
+      line-height: var(--line-height-huge);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .code-block_wrap.plain .code-block_pre {
+      white-space: pre;
+      overflow-wrap: normal;
+    }
+
+    .code-block_wrap:not(.plain) .code-block_code::before {
+      content: "$ ";
+      color: var(--heading-accent);
+      user-select: none;
+    }
+  }
+</style>

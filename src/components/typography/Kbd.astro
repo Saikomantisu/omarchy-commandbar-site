@@ -1,0 +1,40 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { slotContent } from "@/utils/slots.ts";
+
+type Props = HTMLAttributes<"kbd"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const content = await slotContent(Astro.slots);
+---
+
+{render && content && (
+  <kbd class:list={["kbd_wrap", className]} {...rest}>
+    <Fragment set:html={content} />
+  </kbd>
+)}
+
+<style is:global>
+  @layer components {
+    .kbd_wrap {
+      display: inline-block;
+      min-width: 1.6em;
+      padding: 0.2em 0.5em;
+      font-family: var(--mono-family);
+      font-size: 0.8em;
+      line-height: 1.2;
+      text-align: center;
+      white-space: nowrap;
+      color: var(--text);
+      background-color: var(--background-3);
+      border: var(--border-width) solid var(--border);
+      border-bottom-width: 0.15em;
+      border-radius: var(--radius-small);
+      vertical-align: 0.1em;
+    }
+  }
+</style>
