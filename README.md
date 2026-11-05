@@ -37,3 +37,9 @@ node scripts/sync-commandbar-demo.cjs ../omarchy-commandbar
 ```
 
 When upstream UI or icons change, update `FeatureExplorer.astro` and the symbol font subset as needed. The font contains only the displayed Nerd Font symbols; its license is in `src/assets/fonts/symbols-nerd-font-LICENSE.txt`.
+
+## Hero desktop
+
+`HeroDesktop.astro` places a static Command Bar file-search preview over an empty Omarchy desktop wallpaper. The wallpaper is kept sharp and uncropped, with a grain overlay. The original top status bar is retained from the [Matte Black desktop preview](https://github.com/omacom/omarchy/blob/master/themes/matte-black/preview.png). The command bar scales with the desktop.
+
+Wallpaper source: [Omarchy Matte Black ship-at-sea background](https://github.com/omacom/omarchy/blob/master/themes/matte-black/backgrounds/0-ship-at-sea.jpg), saved as `src/assets/images/omarchy-wallpaper.jpg`. Command results use the sample provider data in `src/data/commandbar-demo.json`.

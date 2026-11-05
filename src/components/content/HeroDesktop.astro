@@ -1,0 +1,276 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { getImage } from "astro:assets";
+import desktop from "@/assets/images/omarchy-wallpaper.jpg";
+import desktopBar from "@/assets/images/omarchy-desktop.png";
+import demo from "@/data/commandbar-demo.json";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+const screenshot = await getImage({
+  src: desktop,
+  width: 1920,
+  format: "webp",
+  quality: 90,
+});
+const topBar = await getImage({
+  src: desktopBar,
+  width: 1920,
+  format: "webp",
+  quality: 90,
+});
+const scene = demo.scenes.find((scene) => scene.label === "Files")!;
+---
+
+{render && (
+  <div
+    class:list={["hero-desktop_wrap", className]}
+    role="img"
+    aria-label="An empty Omarchy desktop with its top status bar and orange ship-at-sea wallpaper. Command Bar is the only open window, searching .pdf and showing invoice.pdf and boarding-pass.pdf."
+    {...rest}
+  >
+    <div class="hero-desktop_screen" aria-hidden="true">
+      <img
+        class="hero-desktop_image"
+        src={screenshot.src}
+        width={screenshot.attributes.width}
+        height={screenshot.attributes.height}
+        alt=""
+        loading="eager"
+        decoding="async"
+      />
+      <div class="hero-desktop_topbar">
+        <img
+          class="hero-desktop_topbar-image"
+          src={topBar.src}
+          width={topBar.attributes.width}
+          height={topBar.attributes.height}
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <div class="hero-desktop_menu">
+        <div class="hero-desktop_input">
+          <svg
+            class="hero-desktop_search"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+          >
+            <circle cx="10" cy="10" r="6.5" />
+            <path d="m15 15 6 6" />
+          </svg>
+          <span class="hero-desktop_query">
+            {scene.query}
+            <span class="hero-desktop_caret" />
+          </span>
+          <span class="hero-desktop_mode">Files</span>
+        </div>
+        <div class="hero-desktop_results">
+          <p class="hero-desktop_section">Files</p>
+          {scene.rows.map((row, index) => (
+            <div class:list={["hero-desktop_row", index === 0 && "selected"]}>
+              <svg
+                class="hero-desktop_file"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              >
+                <path d="M5 2h9l5 5v15H5Z M14 2v6h5 M8 12h8 M8 16h6" />
+              </svg>
+              <div class="hero-desktop_details">
+                <p class="hero-desktop_title">{row.title}</p>
+                <p class="hero-desktop_subtitle">{row.subtitle}</p>
+              </div>
+              <span class="hero-desktop_key">Alt+{index + 1}</span>
+            </div>
+          ))}
+        </div>
+        <div class="hero-desktop_footer">
+          <span>Files</span>
+          <span class="hero-desktop_action">
+            Open <span class="hero-desktop_key">↵</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .hero-desktop_wrap {
+      container-type: inline-size;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-width: 80rem;
+      margin-inline: auto;
+    }
+    .hero-desktop_screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      isolation: isolate;
+      background: #111;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.65cqw;
+      box-shadow: 0 2cqw 5cqw rgb(0 0 0 / 0.22);
+    }
+    .hero-desktop_image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .hero-desktop_topbar {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1.6cqw;
+      overflow: hidden;
+      background: #111;
+    }
+    .hero-desktop_topbar-image {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .hero-desktop_screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-desktop_screen::after {
+      background-image: url("../../assets/images/hero-grain.svg");
+      background-size: 14cqw 14cqw;
+      opacity: 0.55;
+      mix-blend-mode: soft-light;
+    }
+    .hero-desktop_menu {
+      position: absolute;
+      z-index: 2;
+      top: 45%;
+      left: 50%;
+      translate: -50% -50%;
+      width: 48cqw;
+      padding: 1.15cqw;
+      border: 0.12cqw solid #8a8a8a;
+      border-radius: 0.25cqw;
+      background: #111;
+      color: #dedede;
+      box-shadow: 0 1.2cqw 4cqw rgb(0 0 0 / 0.65);
+      font-family: var(--mono-family);
+      font-size: 1.1cqw;
+      line-height: 1.4;
+      text-align: start;
+    }
+    .hero-desktop_input {
+      display: flex;
+      align-items: center;
+      gap: 0.75cqw;
+      min-height: 2.7cqw;
+      padding-inline: 0.3cqw;
+    }
+    .hero-desktop_search {
+      width: 1.4cqw;
+      height: 1.4cqw;
+      color: #8d8d8d;
+    }
+    .hero-desktop_query {
+      flex: 1;
+      font-size: 1.3cqw;
+    }
+    .hero-desktop_caret {
+      display: inline-block;
+      width: 0.09cqw;
+      height: 1.4cqw;
+      margin-left: 0.12cqw;
+      background: currentColor;
+      vertical-align: -0.2cqw;
+    }
+    .hero-desktop_mode {
+      padding: 0.2cqw 0.45cqw;
+      color: #d6a054;
+      background: #202020;
+      font-size: 0.85cqw;
+    }
+    .hero-desktop_results {
+      margin-top: 0.5cqw;
+      padding-top: 0.65cqw;
+      border-top: 0.08cqw solid #303030;
+    }
+    .hero-desktop_section {
+      margin: 0 0 0.45cqw;
+      padding-inline: 0.45cqw;
+      font-size: 0.8cqw;
+      color: #8d8d8d;
+    }
+    .hero-desktop_row {
+      display: flex;
+      align-items: center;
+      gap: 0.8cqw;
+      min-height: 4.65cqw;
+      padding: 0.6cqw 0.55cqw;
+      border-radius: 0.2cqw;
+      &.selected {
+        background: #242424;
+        color: #d6a054;
+      }
+    }
+    .hero-desktop_file {
+      flex: none;
+      width: 1.7cqw;
+      height: 1.7cqw;
+    }
+    .hero-desktop_details {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero-desktop_title,
+    .hero-desktop_subtitle {
+      margin: 0;
+      text-box: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hero-desktop_title {
+      font-size: 1.1cqw;
+    }
+    .hero-desktop_subtitle {
+      margin-top: 0.2cqw;
+      color: #8d8d8d;
+      font-size: 0.9cqw;
+    }
+    .hero-desktop_key {
+      flex: none;
+      font-size: 0.75cqw;
+      color: #8d8d8d;
+    }
+    .hero-desktop_footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.7cqw;
+      padding: 0.7cqw 0.3cqw 0;
+      border-top: 0.08cqw solid #303030;
+      color: #8d8d8d;
+      font-size: 0.85cqw;
+    }
+    .hero-desktop_action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65cqw;
+      color: #dedede;
+    }
+  }
+</style>
