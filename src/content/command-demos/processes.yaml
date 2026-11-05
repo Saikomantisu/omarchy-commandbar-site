@@ -1,0 +1,21 @@
+label: Processes
+description: Quit a stuck process without opening a terminal.
+category: tools-shortcuts
+order: 20
+query: kill chrome
+rows:
+  - title: Quit all 2 "chrome" processes
+    subtitle: 586 MB total · pids 101, 102
+    icon: 󰅙
+    group: Processes
+    action: Quit
+  - title: Quit chrome
+    subtitle: pid 101 · 391 MB · 12.5% CPU · /opt/google/chrome/chrome
+    icon: 󰅙
+    group: Processes
+    action: Quit
+  - title: Quit chrome
+    subtitle: pid 102 · 195 MB · 3.0% CPU · /opt/google/chrome/chrome --type=renderer
+    icon: 󰅙
+    group: Processes
+    action: Quit

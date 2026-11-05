@@ -1,0 +1,12 @@
+label: Currency
+description: Convert currencies with rates cached daily.
+category: calculate-convert
+order: 20
+query: 100 usd to eur
+rows:
+  - title: 92.4 EUR
+    subtitle: 100 USD → EUR · rates as of 5 Nov 2026
+    icon: 󰁰
+    group: Currency
+    action: Copy
+    hero: true

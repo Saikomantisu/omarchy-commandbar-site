@@ -1,0 +1,12 @@
+label: Calculator
+description: Do maths as you type. Enter copies the answer.
+category: calculate-convert
+order: 10
+query: (240 - 36) / 12
+rows:
+  - title: "17"
+    subtitle: = (240 - 36) / 12
+    icon: 󰃬
+    group: Calculator
+    action: Copy
+    hero: true

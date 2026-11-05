@@ -1,0 +1,11 @@
+label: Web addresses
+description: Type an address and press Enter to open it.
+category: find-launch
+order: 40
+query: example.com
+rows:
+  - title: https://example.com
+    subtitle: Open in your browser
+    icon: 󰖟
+    group: Web addresses
+    action: Open

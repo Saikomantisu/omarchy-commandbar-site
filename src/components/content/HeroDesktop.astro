@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 import { getImage } from "astro:assets";
 import desktop from "@/assets/images/omarchy-wallpaper.jpg";
 import desktopBar from "@/assets/images/omarchy-desktop.png";
-import demo from "@/data/commandbar-demo.json";
+import { getEntry } from "astro:content";
 
 type Props = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
@@ -23,7 +23,9 @@ const topBar = await getImage({
   format: "webp",
   quality: 90,
 });
-const scene = demo.scenes.find((scene) => scene.label === "Files")!;
+const entry = await getEntry("commandDemos", "files");
+if (!entry) throw new Error("Missing command demo: files");
+const scene = entry.data;
 ---
 
 {render && (

@@ -1,0 +1,12 @@
+label: Time zones
+description: Check the time anywhere in the world.
+category: calculate-convert
+order: 40
+query: time in tokyo
+rows:
+  - title: 21:00 Tokyo
+    subtitle: Thu, 5 Nov · JST · UTC+9
+    icon: 󰥔
+    group: Time
+    action: Copy
+    hero: true

@@ -1,0 +1,16 @@
+label: Windows
+description: Switch to an open window with w.
+category: find-launch
+order: 20
+query: w term
+rows:
+  - title: ~/Code/commandbar
+    subtitle: Terminal · workspace 2
+    icon: 󰖯
+    group: Windows
+    action: Switch
+  - title: btop
+    subtitle: Terminal · workspace 4
+    icon: 󰖯
+    group: Windows
+    action: Switch

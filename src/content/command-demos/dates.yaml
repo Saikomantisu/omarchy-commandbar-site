@@ -1,0 +1,12 @@
+label: Dates
+description: Count the days until a date.
+category: calculate-convert
+order: 50
+query: days until dec 25
+rows:
+  - title: 50 days
+    subtitle: "Until 25 Dec 2026 · sample date: 5 Nov 2026"
+    icon: 󰃭
+    group: Dates
+    action: Copy
+    hero: true

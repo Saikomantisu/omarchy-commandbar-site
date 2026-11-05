@@ -1,0 +1,12 @@
+label: UUIDs, hashes & encoding
+description: Generate a UUID, hash text or encode a string.
+category: tools-shortcuts
+order: 30
+query: base64 hello
+rows:
+  - title: aGVsbG8=
+    subtitle: Base64 encoded text
+    icon: 󰘦
+    group: Encoding
+    action: Copy
+    hero: true

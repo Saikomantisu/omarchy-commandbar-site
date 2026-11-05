@@ -1,0 +1,11 @@
+label: Apps
+description: Launch an installed app by name.
+category: find-launch
+order: 10
+query: browser
+rows:
+  - title: Browser
+    subtitle: Open your default browser
+    icon: 󰖟
+    group: Apps
+    action: Open

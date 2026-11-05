@@ -1,0 +1,12 @@
+label: Units
+description: Convert distances, weights, temperatures and more.
+category: calculate-convert
+order: 30
+query: 5 km to mi
+rows:
+  - title: 3.1069 mi
+    subtitle: 5 km → mi · Length
+    icon: 󰑭
+    group: Units
+    action: Copy
+    hero: true

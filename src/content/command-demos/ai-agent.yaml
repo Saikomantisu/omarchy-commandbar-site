@@ -1,0 +1,21 @@
+label: AI agent
+description: Send a prompt to your Omarchy agent or a configured chat website.
+category: tools-shortcuts
+order: 50
+query: ai why is my wifi slow
+rows:
+  - title: "Ask Claude Code: why is my wifi slow"
+    subtitle: Opens Claude Code in a terminal. It runs commands without asking
+    icon: 󰚩
+    group: Agent
+    action: Ask
+  - title: "Ask ChatGPT: why is my wifi slow"
+    subtitle: Opens chatgpt.com in your browser
+    icon: 󰖟
+    group: Chat websites
+    action: Open website
+  - title: "Ask Claude: why is my wifi slow"
+    subtitle: Opens claude.ai in your browser
+    icon: 󰖟
+    group: Chat websites
+    action: Open website

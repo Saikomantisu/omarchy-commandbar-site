@@ -1,0 +1,16 @@
+label: Files
+description: Search file names with a dot, or type a folder path to browse.
+category: find-launch
+order: 30
+query: .pdf
+rows:
+  - title: invoice.pdf
+    subtitle: ~/Documents
+    icon: 󰈦
+    group: Files
+    action: Open
+  - title: boarding-pass.pdf
+    subtitle: ~/Downloads
+    icon: 󰈦
+    group: Files
+    action: Open

@@ -1,0 +1,11 @@
+label: Keyword commands
+description: Search the web with built-in keywords, or add your own.
+category: tools-shortcuts
+order: 40
+query: g omarchy themes
+rows:
+  - title: Search Google for omarchy themes
+    subtitle: Open search results in your browser
+    icon: 󰖟
+    group: Web search
+    action: Open

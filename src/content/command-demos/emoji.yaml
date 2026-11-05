@@ -1,0 +1,18 @@
+label: Emoji & symbols
+description: Find an emoji or symbol and paste it straight in.
+category: tools-shortcuts
+order: 10
+query: :fire
+rows:
+  - title: fire
+    icon: 🔥
+    group: Emoji
+    action: Type
+  - title: fire engine
+    icon: 🚒
+    group: Emoji
+    action: Type
+  - title: fire extinguisher
+    icon: 🧯
+    group: Emoji
+    action: Type
