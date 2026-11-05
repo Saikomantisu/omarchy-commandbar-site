@@ -1,23 +1,265 @@
 ---
-import BaseHead from "@/components/utility/BaseHead.astro";
+import Layout from "@/layouts/BaseLayout.astro";
+
 import Section from "@/components/wrapper/Section.astro";
 import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
 import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
-import "@/styles/global.css";
+import Kbd from "@/components/typography/Kbd.astro";
+import Button from "@/components/Button.astro";
+import Card from "@/components/item/Card.astro";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+import CodeBlock from "@/components/interactive/CodeBlock.astro";
+import {
+  COMMAND_BAR_VERSION,
+  GITHUB_URL,
+  INSTALL_COMMAND,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+} from "@/consts.ts";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  image: new URL("/og-image.jpg", Astro.site).href,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Omarchy (Arch Linux)",
+  softwareVersion: COMMAND_BAR_VERSION,
+  license: "https://opensource.org/licenses/MIT",
+  codeRepository: GITHUB_URL,
+};
+
+const config = `{
+  "hotkey": "SUPER + PERIOD",
+  "currency": { "home": "EUR", "favorites": ["USD", "GBP"] },
+  "commands": [
+    {
+      "keyword": "aw",
+      "title": "Arch Wiki",
+      "open": "https://wiki.archlinux.org/index.php?search={q}"
+    }
+  ]
+}`;
+
+const removeCommands = `omarchy plugin remove io.github.saikomantisu.commandbar
+rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`;
 ---
 
-<!doctype html>
-<html lang="en" class="theme-dark">
-  <head><BaseHead title="Lumos for Astro" /></head>
-  <body>
-    <main id="main">
-      <Section>
-        <ContentWrapper>
-          <Heading tag="h1">Lumos for Astro</Heading>
-          <Paragraph>Astro components, plain CSS and custom properties.</Paragraph>
-        </ContentWrapper>
-      </Section>
-    </main>
-  </body>
-</html>
+<Layout title="Spotlight-style launcher" theme="dark">
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")}
+  />
+  <!-- hero -->
+  <Section paddingTop="small" paddingBottom="medium" align="center">
+    <ContentWrapper centered={true}>
+      <Eyebrow variant="tag">v{COMMAND_BAR_VERSION} · Current release</Eyebrow>
+      <Heading tag="h1">Spotlight bar for Omarchy.</Heading>
+      <Paragraph
+        variant="large"
+        maxWidth={56}
+        class="color-faded line-height-huge text-wrap-balance"
+      >
+        Launch apps, switch windows, find files and calculate. Convert
+        currencies and units, all from <Kbd>Super</Kbd> <Kbd>.</Kbd>
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="#install">
+          Install Command Bar
+        </Button>
+        <Button
+          element="link"
+          emphasis="secondary"
+          href={GITHUB_URL}
+          target="_blank"
+          rel="noopener"
+        >
+          Star on GitHub
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+  </Section>
+
+  <!-- features -->
+  <Section id="features" paddingBottom="none">
+    <ContentWrapper variant="auto-width">
+      <div>
+        <Eyebrow>What it does</Eyebrow>
+        <Heading maxWidth={20}>
+          Apps, calculations and keyword commands.
+        </Heading>
+      </div>
+      <Paragraph slot="column2" maxWidth={36} class="color-faded">
+        Type an app name or calculation directly. Use prefixes such as
+        <Kbd>w</Kbd> for windows, <Kbd>:</Kbd> for emoji and <Kbd>kill</Kbd>
+        for processes. Type <Kbd>?</Kbd> for help and examples.
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+
+
+  <!-- install -->
+  <Section id="install">
+    <ContentWrapper variant="auto-width">
+      <div>
+        <Eyebrow>Install</Eyebrow>
+        <Heading maxWidth={20}>One command. Then Super + Period.</Heading>
+      </div>
+      <Paragraph slot="column2" maxWidth={36} class="color-faded">
+        Everything Command Bar needs comes with Omarchy, so there is nothing
+        else to install.
+      </Paragraph>
+    </ContentWrapper>
+    <CodeBlock code={INSTALL_COMMAND} />
+    <Grid medium={3}>
+      <ContentWrapper>
+        <Eyebrow>01</Eyebrow>
+        <Heading tag="h3" variant="h5">
+          Add the plugin
+        </Heading>
+        <Paragraph variant="small" class="color-faded">
+          Run the command in a terminal. It enables itself.
+        </Paragraph>
+      </ContentWrapper>
+      <ContentWrapper>
+        <Eyebrow>02</Eyebrow>
+        <Heading tag="h3" variant="h5">
+          Press Super + Period
+        </Heading>
+        <Paragraph variant="small" class="color-faded">
+          The bar opens over whatever you are doing.
+        </Paragraph>
+      </ContentWrapper>
+      <ContentWrapper>
+        <Eyebrow>03</Eyebrow>
+        <Heading tag="h3" variant="h5">
+          Type, or press ?
+        </Heading>
+        <Paragraph variant="small" class="color-faded">
+          The help screen lists every feature with an example.
+        </Paragraph>
+      </ContentWrapper>
+    </Grid>
+  </Section>
+
+  <!-- configure -->
+  <Section id="configure">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Configure</Eyebrow>
+      <Heading maxWidth={20}>Make it yours with one JSON file.</Heading>
+      <Paragraph maxWidth={40} class="color-faded">
+        Change the hotkey, set your home currency, pin the time zones you check
+        and add keyword commands of your own. Changes apply when you save.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button
+          element="link"
+          emphasis="secondary"
+          href={`${GITHUB_URL}#readme`}
+          target="_blank"
+          rel="noopener"
+        >
+          Read the README
+        </Button>
+      </ButtonWrapper>
+      <CodeBlock
+        slot="column2"
+        variant="plain"
+        label="~/.config/omarchy/extensions/commandbar.json"
+        code={config}
+      />
+    </ContentWrapper>
+  </Section>
+
+  <!-- faq -->
+  <Section id="faq">
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>FAQ</Eyebrow>
+      <Heading maxWidth={20}>Questions, answered.</Heading>
+      <Accordion slot="column2" openFirst={true}>
+        <AccordionItem heading="Does it replace the Omarchy menu?">
+          <Paragraph class="color-faded">
+            No. It leaves the menu on Super + Space alone and sits beside it on
+            Super + Period. It is an alternative to the separate emoji picker,
+            calculator and agent picker, each of which has its own key.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Does anything leave my machine?">
+          <Paragraph class="color-faded">
+            Currency conversions fetch exchange rates when needed, using a daily
+            cache. Web searches open in your browser. AI prompts go to the agent
+            or chat website you select. File search reads names, not file
+            contents; the bar stores its cache locally.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="What does the ai command do?">
+          <Paragraph class="color-faded">
+            It opens your default Omarchy agent in a terminal with your prompt.
+            The agent uses auto-approve and can run commands without asking. If
+            no default is set, it opens the agent picker. Separate results can
+            open the prompt in configured chat websites such as ChatGPT and
+            Claude.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Can I change the hotkey?">
+          <Paragraph class="color-faded">
+            Yes. Set hotkey in your commandbar.json and save. The default is
+            Super + Period.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Can I add my own commands?">
+          <Paragraph class="color-faded">
+            Yes. Add entries to the commands list in your config, each with a
+            keyword, a title and either a web address to open or a command to
+            run.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="How do I remove it?">
+          <CodeBlock variant="plain" label="Terminal" code={removeCommands} />
+        </AccordionItem>
+      </Accordion>
+    </ContentWrapper>
+  </Section>
+
+  <!-- open source -->
+  <Section theme="dark">
+    <ContentWrapper variant="auto-width">
+      <div>
+        <Eyebrow>Open source</Eyebrow>
+        <Heading maxWidth={20}>Source code on GitHub.</Heading>
+      </div>
+      <Paragraph slot="column2" maxWidth={36}>
+        Released under the MIT license, with source code and provider tests on
+        GitHub. Report a bug or discuss a feature before contributing.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid medium={3}>
+      <Card
+        heading="Report a bug"
+        text="Open an issue with what you typed, what you expected and what happened."
+        buttonLabel="Open an issue"
+        buttonHref={`${GITHUB_URL}/issues/new`}
+      />
+      <Card
+        heading="Add a feature"
+        text="Each feature is a small JavaScript provider. Open an issue first, then keep the pull request focused."
+        buttonLabel="Read the guide"
+        buttonHref={`${GITHUB_URL}/blob/main/CONTRIBUTING.md`}
+      />
+      <Card
+        heading="Star the repo"
+        text="Browse the source, follow releases or star the project on GitHub."
+        buttonLabel="Star on GitHub"
+        buttonHref={GITHUB_URL}
+      />
+    </Grid>
+  </Section>
+</Layout>

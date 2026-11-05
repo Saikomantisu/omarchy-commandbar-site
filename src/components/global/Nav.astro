@@ -1,0 +1,345 @@
+---
+import NavLink from "@/components/global/NavLink.astro";
+import { GITHUB_URL, SITE_NAME } from "@/consts.ts";
+
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Fix the nav over the page. */
+  overlap?: boolean;
+}
+
+const { render = true, overlap = false } = Astro.props;
+---
+
+{render && (
+  <header class:list={["nav_wrap", overlap && "overlap"]}>
+    <div class="nav_inner">
+      <a class="nav_logo" href="/" aria-label={SITE_NAME}>
+        <img class="nav_mark" src="/logo.png" width="493" height="493" alt="" />
+        <span class="nav_logo_text">Command Bar</span>
+      </a>
+      <button
+        class="nav_toggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+      >
+        <span class="nav_toggle_icon" />
+      </button>
+      <nav class="nav_menu" id="nav-menu" aria-label="Main">
+        <ul class="nav_links">
+          <NavLink href="/#features">Features</NavLink>
+          <NavLink href="/#configure">Configure</NavLink>
+          <NavLink href="/#faq">FAQ</NavLink>
+          <NavLink href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+            GitHub <span aria-hidden="true">↗</span>
+          </NavLink>
+        </ul>
+      </nav>
+      <a class="nav_install" href="/#install">
+        Install <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+)}
+
+<noscript>
+  <style>
+    .nav_wrap .nav_toggle {
+      display: none;
+    }
+    .nav_wrap .nav_inner {
+      flex-wrap: wrap;
+    }
+    .nav_wrap .nav_menu {
+      position: static;
+      display: block;
+      flex-basis: 100%;
+      order: 4;
+      margin-top: 0.5rem;
+      box-shadow: none;
+    }
+  </style>
+</noscript>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".nav_wrap").forEach((nav) => {
+    const toggle = nav.querySelector<HTMLButtonElement>(".nav_toggle");
+    const menu = nav.querySelector<HTMLElement>(".nav_menu");
+    if (!toggle || !menu) return;
+
+    const desktop = window.matchMedia("(width >= 48rem)");
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    };
+
+    toggle.addEventListener("click", () => {
+      const open = toggle.getAttribute("aria-expanded") !== "true";
+      setOpen(open);
+      if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
+    });
+
+    nav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.classList.contains("open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (event.target instanceof Node && !nav.contains(event.target))
+        setOpen(false);
+    });
+
+    nav.addEventListener("focusout", (event) => {
+      if (
+        !(event.relatedTarget instanceof Node) ||
+        !nav.contains(event.relatedTarget)
+      ) {
+        setOpen(false);
+      }
+    });
+
+    desktop.addEventListener("change", () => {
+      const toggleWasFocused = document.activeElement === toggle;
+      const menuWasFocused = menu.contains(document.activeElement);
+      setOpen(false);
+      if (desktop.matches && toggleWasFocused)
+        menu.querySelector<HTMLAnchorElement>("a")?.focus();
+      if (!desktop.matches && menuWasFocused) toggle.focus();
+    });
+  });
+</script>
+
+<style is:global>
+  @layer components {
+    .nav_wrap {
+      position: sticky;
+      top: var(--space-3);
+      z-index: 100;
+      width: var(--site-width);
+      max-width: 64rem;
+      margin: var(--space-3) auto 0;
+      color: var(--text);
+
+      &.overlap {
+        position: fixed;
+        inset-inline: 0;
+        margin-top: 0;
+      }
+
+      @media (width >= 48rem) {
+        .nav_logo_text {
+          display: inline;
+        }
+
+        .nav_logo {
+          padding-right: var(--space-4);
+        }
+
+        .nav_menu {
+          position: static;
+          display: block;
+          flex: 1;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          backdrop-filter: none;
+        }
+
+        .nav_links {
+          flex-direction: row;
+          align-items: center;
+          gap: var(--space-1);
+
+          & > li:last-child {
+            margin-left: auto;
+          }
+        }
+
+        .nav_link {
+          padding-inline: var(--space-3);
+        }
+        .nav_toggle {
+          display: none;
+        }
+      }
+    }
+
+    .nav_inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 4.25rem;
+      padding: 0.5rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      background: var(--background-2);
+    }
+
+    .nav_logo {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+      border-radius: var(--radius-small);
+      text-decoration: none;
+    }
+
+    .nav_mark {
+      display: block;
+      flex: none;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 25%;
+      object-fit: contain;
+    }
+
+    .nav_logo_text {
+      display: none;
+      font-family: var(--mono-family);
+      font-size: var(--text-small);
+      font-weight: var(--primary-medium);
+      letter-spacing: var(--letter-spacing-tight);
+      white-space: nowrap;
+    }
+
+    .nav_install {
+      order: 2;
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      min-height: 2.75rem;
+      margin-left: auto;
+      padding: 0.75em 1.25em;
+      border: var(--border-width) solid var(--button-border);
+      border-radius: var(--radius-small);
+      background: var(--button-background);
+      color: var(--button-text);
+      font-size: var(--text-small);
+      font-weight: var(--primary-medium);
+      line-height: 1.2;
+      text-decoration: none;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      @media (hover: hover) {
+        &:hover {
+          background: var(--button-background-hover);
+          color: var(--button-text-hover);
+        }
+      }
+    }
+
+    .nav_toggle {
+      order: 3;
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      color: inherit;
+      background: var(--background-3);
+    }
+
+    .nav_toggle_icon {
+      position: relative;
+      width: 1rem;
+      height: 0.5rem;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        inset-inline: 0;
+        height: var(--border-width);
+        background: currentColor;
+        transition: transform var(--open-duration) var(--open-ease);
+      }
+      &::before {
+        top: 0;
+      }
+      &::after {
+        bottom: 0;
+      }
+    }
+
+    .nav_wrap.open .nav_toggle_icon {
+      &::before {
+        transform: translateY(0.21875rem) rotate(45deg);
+      }
+      &::after {
+        transform: translateY(-0.21875rem) rotate(-45deg);
+      }
+    }
+
+    .nav_menu {
+      position: absolute;
+      top: calc(100% + var(--space-2));
+      inset-inline: 0;
+      display: none;
+      max-height: calc(100svh - 8rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: var(--space-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      background: var(--background-2);
+      box-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.4);
+    }
+
+    .nav_wrap.open .nav_menu {
+      display: block;
+    }
+
+    .nav_links {
+      font-family: var(--mono-family);
+      display: flex;
+      flex-direction: column;
+      font-size: var(--text-small);
+      font-weight: var(--primary-medium);
+    }
+
+    .nav_link {
+      display: flex;
+      align-items: center;
+      gap: 0.375em;
+      min-height: 2.75rem;
+      padding: 0.75em 1em;
+      border-radius: var(--radius-small);
+      color: var(--text-2);
+      text-decoration: none;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      &[aria-current="page"] {
+        color: var(--text);
+        background: var(--background-3);
+      }
+      @media (hover: hover) {
+        &:hover {
+          color: var(--text);
+          background: var(--background-3);
+        }
+      }
+    }
+  }
+</style>
