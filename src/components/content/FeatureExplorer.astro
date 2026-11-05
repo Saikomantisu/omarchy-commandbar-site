@@ -1,0 +1,397 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { getImage } from "astro:assets";
+import wallpaper from "@/assets/images/commandbar-showcase.webp";
+import type { FeatureGroup } from "@/data/feature-groups";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Feature group and its command previews. */
+  group: FeatureGroup;
+  /** Preview placement on wider screens. */
+  variant?: "default" | "reversed";
+};
+
+const {
+  render = true,
+  group,
+  variant = "default",
+  class: className,
+  ...rest
+} = Astro.props;
+const instanceId = `features-${crypto.randomUUID()}`;
+const image = await getImage({
+  src: wallpaper,
+  width: 1000,
+  format: "webp",
+  quality: 80,
+});
+---
+
+{render && group && (
+  <div
+    class:list={[
+      "feature-explorer_wrap",
+      variant === "reversed" && "reversed",
+      className,
+    ]}
+    {...rest}
+  >
+    <div class="feature-explorer_content">
+      <div class="feature-explorer_heading margin-trim">
+        <Heading tag="h2" variant="h4">
+          {group.title}
+        </Heading>
+        <Paragraph class="color-faded">{group.text}</Paragraph>
+      </div>
+      <div
+        class="feature-explorer_choices"
+        role="group"
+        aria-label={`${group.title} commands`}
+      >
+        {group.commands.map((command, index) => (
+          <button
+            class="feature-explorer_choice"
+            type="button"
+            aria-pressed={index === 0 ? "true" : "false"}
+            aria-controls={`${instanceId}-preview`}
+          >
+            <span class="feature-explorer_title text-style-main">
+              {command.label}
+              <code class="feature-explorer_query">{command.scene.query}</code>
+            </span>
+            <span class="feature-explorer_text text-style-small">
+              {command.text}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <div class="feature-explorer_preview" id={`${instanceId}-preview`}>
+      <div class="feature-explorer_artboard">
+        <img
+          class="feature-explorer_wallpaper"
+          src={image.src}
+          width={image.attributes.width}
+          height={image.attributes.height}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        {group.commands.map(({ scene }, index) => (
+          <div
+            class="feature-explorer_scene"
+            hidden={index !== 0}
+            role="img"
+            aria-label={`${scene.query}. ${scene.rows.map((row) => row.title).join(", ")}. Sample interface preview.`}
+          >
+            <div class="feature-explorer_window" aria-hidden="true">
+              <div class="feature-explorer_input">
+                <span class="feature-explorer_search">⌕</span>
+                <span>{scene.query}</span>
+                <span class="feature-explorer_cursor" />
+              </div>
+              <div class="feature-explorer_results">
+                {scene.rows.map((row, rowIndex) => (
+                  <div
+                    class:list={[
+                      "feature-explorer_result",
+                      rowIndex === 0 && "selected",
+                      row.hero && "answer",
+                    ]}
+                  >
+                    <span class="feature-explorer_icon">
+                      {scene.label === "Files" ? "▤" : row.icon}
+                    </span>
+                    <div class="feature-explorer_result-content">
+                      <p class="feature-explorer_result-title">{row.title}</p>
+                      {row.subtitle && (
+                        <p class="feature-explorer_result-subtitle">
+                          {row.subtitle}
+                        </p>
+                      )}
+                    </div>
+                    <span class="feature-explorer_key">Alt+{rowIndex + 1}</span>
+                  </div>
+                ))}
+              </div>
+              <div class="feature-explorer_footer">
+                <span>{scene.rows[0].group}</span>
+                <span>
+                  {scene.rows[0].action}{" "}
+                  <span class="feature-explorer_key">↵</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".feature-explorer_wrap")
+    .forEach((explorer) => {
+      const choices = [
+        ...explorer.querySelectorAll<HTMLButtonElement>(
+          ".feature-explorer_choice",
+        ),
+      ];
+      const scenes = [
+        ...explorer.querySelectorAll<HTMLElement>(".feature-explorer_scene"),
+      ];
+      const select = (index: number) => {
+        choices.forEach((choice, i) =>
+          choice.setAttribute("aria-pressed", String(i === index)),
+        );
+        scenes.forEach((scene, i) => {
+          scene.hidden = i !== index;
+        });
+      };
+      choices.forEach((choice, index) => {
+        choice.addEventListener("pointerenter", (event) => {
+          if (event.pointerType !== "touch") select(index);
+        });
+        choice.addEventListener("focus", () => select(index));
+        choice.addEventListener("click", () => select(index));
+      });
+    });
+</script>
+
+<style is:global>
+  @font-face {
+    font-family: "Command Bar symbols";
+    src: url("../../assets/fonts/commandbar-symbols.woff2") format("woff2");
+    font-display: block;
+  }
+
+  @layer components {
+    .feature-explorer_wrap {
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      gap: var(--space-5);
+      align-items: center;
+      @media (width >= 64rem) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        gap: var(--space-7);
+        .feature-explorer_preview {
+          justify-self: end;
+        }
+        &.reversed {
+          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+          .feature-explorer_content {
+            order: 2;
+          }
+          .feature-explorer_preview {
+            justify-self: start;
+          }
+        }
+      }
+    }
+    .feature-explorer_content {
+      min-width: 0;
+    }
+    .feature-explorer_heading {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .feature-explorer_choices {
+      display: flex;
+      flex-direction: column;
+    }
+    .feature-explorer_choice {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      border-left: 0.125rem solid var(--border);
+      text-align: start;
+      cursor: pointer;
+      transition:
+        background-color var(--hover-duration),
+        border-color var(--hover-duration);
+      &[aria-pressed="true"] {
+        border-color: var(--brand-500);
+        background: color-mix(in srgb, var(--brand-500) 5%, transparent);
+        .feature-explorer_query {
+          color: var(--brand-500);
+        }
+        .feature-explorer_title {
+          color: var(--text);
+        }
+      }
+      &:focus-visible {
+        outline: var(--focus-width) solid var(--brand-500);
+        outline-offset: var(--focus-offset);
+      }
+    }
+    .feature-explorer_title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.25rem 1rem;
+      color: var(--text-2);
+    }
+    .feature-explorer_query {
+      font-family: var(--mono-family);
+      font-size: 0.75rem;
+      color: var(--text-2);
+      overflow-wrap: anywhere;
+    }
+    .feature-explorer_text {
+      color: var(--text-2);
+    }
+    .feature-explorer_preview {
+      width: 100%;
+      max-width: 38rem;
+      min-width: 0;
+      justify-self: center;
+    }
+    .feature-explorer_artboard {
+      position: relative;
+      container-type: inline-size;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      isolation: isolate;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      background: var(--background-2);
+    }
+    .feature-explorer_artboard::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image: url("/grain-preview.svg");
+      pointer-events: none;
+    }
+    .feature-explorer_wallpaper {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(0.75cqw) brightness(0.5) saturate(0.65);
+      transform: scale(1.05);
+      z-index: -2;
+    }
+    .feature-explorer_scene {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 6cqw;
+    }
+    .feature-explorer_scene[hidden] {
+      display: none;
+    }
+    .feature-explorer_window {
+      width: 100%;
+      padding: 2.5cqw;
+      background: #111110f5;
+      border: 0.2cqw solid #8d8d8d;
+      border-radius: 2cqw;
+      box-shadow: 0 3cqw 8cqw #0007;
+      color: #dedede;
+      font-family: var(--mono-family);
+    }
+    .feature-explorer_input {
+      display: flex;
+      align-items: center;
+      gap: 1.5cqw;
+      padding: 1.5cqw 0.5cqw 3cqw;
+      font-size: 2.6cqw;
+    }
+    .feature-explorer_search {
+      color: #8d8d8d;
+      font-size: 4cqw;
+    }
+    .feature-explorer_cursor {
+      width: 0.2cqw;
+      height: 3cqw;
+      background: #dedede;
+    }
+    .feature-explorer_results {
+      border-top: 0.15cqw solid #ffffff1a;
+      padding-top: 2cqw;
+    }
+    .feature-explorer_result {
+      display: flex;
+      gap: 2cqw;
+      align-items: center;
+      padding: 2cqw 1.5cqw;
+      border-radius: 1cqw;
+      &.selected {
+        background: #ffffff10;
+        color: #d6a054;
+      }
+      &.answer .feature-explorer_result-title {
+        font-size: 6cqw;
+        line-height: 1.2;
+      }
+    }
+    .feature-explorer_icon {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 7cqw;
+      height: 7cqw;
+      background: #ffffff10;
+      border-radius: 1cqw;
+      font-size: 4cqw;
+      font-family: "Command Bar symbols", var(--mono-family);
+    }
+    .feature-explorer_result-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75cqw;
+      flex: 1;
+      min-width: 0;
+    }
+    .feature-explorer_result-title,
+    .feature-explorer_result-subtitle {
+      margin: 0;
+      text-box: normal;
+    }
+    .feature-explorer_result-title {
+      font-size: 2.7cqw;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .feature-explorer_result-subtitle {
+      color: #9d9d9d;
+      font-size: 2cqw;
+      line-height: 1.4;
+    }
+    .feature-explorer_key {
+      display: inline-block;
+      padding: 0.4cqw 0.6cqw;
+      border: 0.15cqw solid #ffffff2e;
+      border-radius: 0.4cqw;
+      font-size: 1.8cqw;
+      color: #bcbcbc;
+    }
+    .feature-explorer_footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2cqw;
+      margin-top: 2cqw;
+      border-top: 0.15cqw solid #ffffff1a;
+      font-size: 2cqw;
+      color: #9d9d9d;
+    }
+  }
+</style>
