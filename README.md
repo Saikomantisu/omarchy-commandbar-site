@@ -1,57 +1,29 @@
 # Omarchy Commandbar site
 
-Astro project using the official [Lumos Framework](https://lumosframework.com/) starter.
+Landing page for [Command Bar for Omarchy](https://github.com/Saikomantisu/omarchy-commandbar), built with Astro and [Lumos](https://lumosframework.com/).
 
 ## Development
 
 ```sh
 npm install
-npm run dev
+npm run dev -- --background
 ```
 
 Open http://localhost:4321.
 
-## Commands
+Use `npm run astro -- dev status`, `npm run astro -- dev logs` and
+`npm run astro -- dev stop` to manage the background server.
 
-- `npm run check` checks Astro and TypeScript files.
-- `npm run build` generates the static site in `dist/`.
-- `npm run preview` serves the production build locally.
-- `npm run format` formats the project.
+Run `npm run check` to validate, `npm run build` to build, and `npm run preview` to preview the build.
 
 ## Customize
 
-Set site metadata in `src/consts.ts` and replace `SITE_URL` with your production origin before deploying.
+Set site metadata in `src/consts.ts` and the `SITE_URL` environment variable to your production origin before deploying.
 
-The starter includes `src/pages/index.astro` and design tokens in `src/styles/base.css`. Read [LUMOS.md](LUMOS.md) before adding pages, components, or styles.
+The landing page is in `src/pages/index.astro` and design tokens are in `src/styles/base.css`. Read [LUMOS.md](LUMOS.md) before adding pages, components, or styles.
 
-The Lumos starter is [MIT licensed](LICENSE).
+Edit command previews in `src/content/features/`. Copy an existing YAML entry to add a command; keep `files.yaml` for the hero. The schema is in `src/content.config.ts`.
 
-## Adding a command
+Desktop artwork comes from the [Omarchy Matte Black theme](https://github.com/omacom/omarchy/tree/master/themes/matte-black).
 
-Each YAML file in `src/content/command-demos/` owns a command's label, description, category, example query and preview results. New entries appear automatically in the matching feature group. No component or feature-list edits are needed.
-
-To add a command, create a YAML file such as `my-command.yaml`:
-
-```yaml
-label: My command
-description: A short explanation of what it does.
-category: tools-shortcuts
-query: my command
-rows:
-  - title: Example result
-    subtitle: Optional supporting text
-```
-
-The preview uses the sample text you write in `rows`. No plugin checkout or generation step is needed.
-
-Categories are `find-launch`, `calculate-convert` and `tools-shortcuts`. Lower `order` values appear first; omitted values default to 100, with filename order breaking ties. Rename or remove a command by editing or deleting its YAML file. Result rows require only a title; subtitle, icon, group, action and answer styling have defaults. Use `hero: true` on a row for a large calculator-style answer.
-
-Astro validates entries against `src/content.config.ts` during checks and builds. `src/data/feature-groups.ts` contains only the category headings and grouping logic. The hero uses the `files` entry, so keep that filename.
-
-When upstream UI or icons change, update `FeatureExplorer.astro` and the symbol font subset as needed. The font contains only the displayed Nerd Font symbols; its license is in `src/assets/fonts/symbols-nerd-font-LICENSE.txt`.
-
-## Hero desktop
-
-`HeroDesktop.astro` places a static Command Bar file-search preview over an empty Omarchy desktop wallpaper. The wallpaper is kept sharp and uncropped, with a grain overlay. The original top status bar is retained from the [Matte Black desktop preview](https://github.com/omacom/omarchy/blob/master/themes/matte-black/preview.png). The command bar scales with the desktop.
-
-Wallpaper source: [Omarchy Matte Black ship-at-sea background](https://github.com/omacom/omarchy/blob/master/themes/matte-black/backgrounds/0-ship-at-sea.jpg), saved as `src/assets/images/omarchy-wallpaper.jpg`. Command results use the sample provider data in the `commandDemos` content collection.
+[MIT license](LICENSE).

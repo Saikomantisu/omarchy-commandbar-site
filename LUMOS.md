@@ -16,13 +16,9 @@ How to build pages in this project so they stay consistent and cheap to change. 
 
 ## Framework releases
 
-Update the framework version in `package.json`, `package-lock.json`, and the
-style-guide badge in `src/pages/index.astro` together. The badge names the
-framework release, not the user's project version: `create-lumos` resets the
-project's `package.json.version` to `0.0.1`. Do not bind the badge to that field.
-The installer's `lumos` metadata can also be absent when GitHub's API is
-unavailable. CI runs `.github/scripts/check-starter-version.mjs` to build fresh
-sites with and without that metadata and verify their displayed release.
+The `lumos` metadata in `package.json` records the framework release used by
+this site. Keep it separate from the site's `version` and the plugin's
+`COMMAND_BAR_VERSION` in `src/consts.ts`.
 
 ## Custom components
 

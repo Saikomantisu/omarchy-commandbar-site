@@ -23,8 +23,8 @@ const topBar = await getImage({
   format: "webp",
   quality: 90,
 });
-const entry = await getEntry("commandDemos", "files");
-if (!entry) throw new Error("Missing command demo: files");
+const entry = await getEntry("features", "files");
+if (!entry) throw new Error("Missing feature: files");
 const scene = entry.data;
 ---
 

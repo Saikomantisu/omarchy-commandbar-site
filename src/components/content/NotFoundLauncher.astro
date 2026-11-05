@@ -1,0 +1,415 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { GITHUB_URL } from "@/consts.ts";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+const destinations = [
+  {
+    title: "Go home",
+    detail: "Back to familiar territory",
+    href: "/",
+    command: "home",
+    icon: "~/",
+  },
+  {
+    title: "Install Command Bar",
+    detail: "Put the real thing on your desktop",
+    href: "/#install",
+    command: "install",
+    icon: ">_",
+  },
+  {
+    title: "Explore the features",
+    detail: "See what the bar can actually find",
+    href: "/#features",
+    command: "features",
+    icon: "?",
+  },
+  {
+    title: "Open GitHub",
+    detail: "The source is definitely here",
+    href: GITHUB_URL,
+    command: "github",
+    icon: "↗",
+  },
+];
+---
+
+{render && (
+  <div class:list={["not-found_wrap", className]} {...rest}>
+    <div class="not-found_intro">
+      <p class="not-found_status">
+        <span aria-hidden="true">[404]</span> Address not found
+      </p>
+      <h1 class="not-found_heading text-style-h1">
+        Page missing.
+        <br />
+        <span>Bar still works.</span>
+      </h1>
+      <p class="not-found_description text-style-large">
+        We can launch a lot of things. This page isn't one of them.
+      </p>
+    </div>
+    <div class="not-found_launcher">
+      <div class="not-found_titlebar">
+        <span>commandbar / recovery</span>
+        <span aria-hidden="true">launcher online</span>
+      </div>
+      <form
+        class="not-found_form"
+        role="search"
+        aria-label="Find a destination"
+      >
+        <label
+          class="not-found_prompt"
+          for="recovery-command"
+          aria-label="Command"
+        >
+          &gt;
+        </label>
+        <input
+          id="recovery-command"
+          class="not-found_input"
+          type="text"
+          placeholder="Try home, install, or 404 + 1"
+          autocomplete="off"
+          spellcheck="false"
+          aria-describedby="recovery-hint"
+        />
+        <button class="not-found_submit" type="submit" aria-label="Run command">
+          <svg
+            class="not-found_submit-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M20 5v9H4m6-6-6 6 6 6" />
+          </svg>
+        </button>
+      </form>
+      <div
+        class="not-found_message"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        hidden
+      >
+        <div class="not-found_message-copy">
+          <p class="not-found_result"></p>
+          <p class="not-found_detail"></p>
+        </div>
+      </div>
+      <nav class="not-found_results" aria-label="Recovery destinations">
+        {destinations.map((item) => (
+          <a
+            class="not-found_destination"
+            href={item.href}
+            data-command={item.command}
+          >
+            <span class="not-found_icon" aria-hidden="true">
+              {item.icon}
+            </span>
+            <span class="not-found_label">
+              <span class="not-found_name">{item.title}</span>
+              <span class="not-found_summary">{item.detail}</span>
+            </span>
+            <span class="not-found_arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        ))}
+      </nav>
+      <p class="not-found_hint" id="recovery-hint">
+        Try home, install, or 404 + 1. Enter to open.
+      </p>
+    </div>
+    <p class="not-found_aside">
+      Wrong turn?{" "}
+      <a href="/">
+        Take me home <span aria-hidden="true">↗</span>
+      </a>
+    </p>
+    <noscript>
+      <p class="not-found_aside">
+        The command input needs JavaScript. The links above will get you there.
+      </p>
+    </noscript>
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>(".not-found_wrap").forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>(".not-found_input");
+    const form = root.querySelector<HTMLFormElement>(".not-found_form");
+    const result = root.querySelector<HTMLElement>(".not-found_result");
+    const detail = root.querySelector<HTMLElement>(".not-found_detail");
+    const message = root.querySelector<HTMLElement>(".not-found_message");
+    const links = [
+      ...root.querySelectorAll<HTMLAnchorElement>(".not-found_destination"),
+    ];
+    if (!input || !form || !result || !detail || !message) return;
+
+    const path = window.location.pathname;
+    input.value =
+      path === "/404" || path === "/404.html" ? "/missing-page" : path;
+    input.addEventListener("focus", () => input.select(), { once: true });
+
+    const update = () => {
+      const query = input.value.trim().toLowerCase();
+      const expression = query.match(
+        /^(-?\d+(?:\.\d+)?)\s*([+\-*/×÷])\s*(-?\d+(?:\.\d+)?)$/,
+      );
+      let answer: number | undefined;
+      if (expression) {
+        const a = Number(expression[1]);
+        const b = Number(expression[3]);
+        const operator = expression[2];
+        answer =
+          operator === "+"
+            ? a + b
+            : operator === "-"
+              ? a - b
+              : operator === "*" || operator === "×"
+                ? a * b
+                : a / b;
+      }
+      const recovery = query.startsWith("/") || query === "404";
+      links.forEach((link) => {
+        link.hidden =
+          Boolean(expression) ||
+          !(
+            recovery ||
+            !query ||
+            link.textContent?.toLowerCase().includes(query) ||
+            link.dataset.command?.includes(query)
+          );
+      });
+      const count = links.filter((link) => !link.hidden).length;
+      message.hidden = !expression && count > 0;
+      result.textContent = expression
+        ? Number.isFinite(answer)
+          ? String(Number(answer!.toPrecision(12)))
+          : "Even this bar has its limits."
+        : "Nothing here by that name.";
+      detail.textContent = expression
+        ? "The page is missing. The calculator is doing fine."
+        : "Try home, install, features, or github.";
+    };
+    input.addEventListener("input", update);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      links.find((link) => !link.hidden)?.click();
+    });
+  });
+</script>
+
+<style is:global>
+  @layer components {
+    .not-found_wrap {
+      width: 100%;
+      max-width: 44rem;
+      margin-inline: auto;
+      padding-top: var(--space-6);
+      @media (width < 48rem) {
+        .not-found_titlebar > :last-child {
+          display: none;
+        }
+        .not-found_heading {
+          font-size: clamp(2.6rem, 9vw, 4rem);
+        }
+        .not-found_summary {
+          display: none;
+        }
+        .not-found_destination {
+          padding-block: 1rem;
+        }
+      }
+    }
+    .not-found_intro {
+      text-align: center;
+      margin-bottom: var(--space-7);
+    }
+    .not-found_status {
+      color: var(--text-2);
+      font: 0.75rem var(--mono-family);
+      margin-bottom: var(--space-5);
+    }
+    .not-found_status span {
+      color: var(--brand-500);
+      margin-right: 0.6em;
+    }
+    .not-found_heading {
+      margin-block: 0 var(--space-5);
+      text-wrap: balance;
+    }
+    .not-found_heading span {
+      color: var(--brand-500);
+    }
+    .not-found_description {
+      color: var(--text-2);
+      text-wrap: pretty;
+      margin: 0;
+    }
+    .not-found_launcher {
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      background: var(--background-2);
+      box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.2);
+      overflow: hidden;
+    }
+    .not-found_titlebar {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: var(--border-width) solid var(--border);
+      color: var(--text-2);
+      font: 0.7rem var(--mono-family);
+    }
+    .not-found_form {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.25rem;
+      background: var(--background);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .not-found_prompt {
+      color: var(--brand-500);
+      font: 1.4rem var(--mono-family);
+    }
+    .not-found_input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font: 1rem var(--mono-family);
+      padding: 0.5rem 0;
+    }
+    .not-found_input::placeholder {
+      color: var(--text-2);
+      opacity: 1;
+    }
+    .not-found_submit {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: var(--border-width) solid var(--border);
+      border-radius: 0.25rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--text-2);
+      background: var(--background-3);
+    }
+    .not-found_submit-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    .not-found_submit:hover {
+      color: var(--brand-500);
+    }
+    .not-found_message {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 1.25rem;
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .not-found_message[hidden] {
+      display: none;
+    }
+    .not-found_message-copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 0;
+    }
+    .not-found_result {
+      font-weight: var(--primary-medium);
+      line-height: var(--line-height-large);
+      margin: 0;
+      overflow-wrap: anywhere;
+      font-variant-numeric: tabular-nums;
+    }
+    .not-found_detail {
+      color: var(--text-2);
+      font-size: 0.85rem;
+      line-height: var(--line-height-huge);
+      margin: 0;
+      text-wrap: pretty;
+    }
+    .not-found_results {
+      padding: 0.5rem;
+    }
+    .not-found_destination {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem;
+      border-radius: 0.25rem;
+      text-decoration: none;
+    }
+    .not-found_destination[hidden] {
+      display: none;
+    }
+    .not-found_destination:hover,
+    .not-found_destination:focus-visible {
+      background: var(--background-3);
+    }
+    .not-found_icon {
+      width: 2.5rem;
+      flex-shrink: 0;
+      text-align: center;
+      font: 1.1rem var(--mono-family);
+      color: var(--brand-500);
+    }
+    .not-found_label {
+      flex: 1;
+      min-width: 0;
+    }
+    .not-found_name {
+      display: block;
+      font-weight: var(--primary-medium);
+    }
+    .not-found_summary {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--text-2);
+      font-size: 0.8rem;
+    }
+    .not-found_arrow {
+      color: var(--text-2);
+    }
+    .not-found_hint {
+      border-top: var(--border-width) solid var(--border);
+      color: var(--text-2);
+      padding: 0.8rem 1.25rem;
+      margin: 0;
+      font: 0.7rem/1.6 var(--mono-family);
+    }
+    .not-found_aside {
+      text-align: center;
+      color: var(--text-2);
+      font-size: 0.85rem;
+      margin: var(--space-6) 0 0;
+    }
+    .not-found_aside a {
+      color: var(--text);
+      text-underline-offset: 0.25em;
+      margin-left: 0.4em;
+    }
+    .not-found_aside a:hover {
+      color: var(--brand-500);
+    }
+  }
+</style>

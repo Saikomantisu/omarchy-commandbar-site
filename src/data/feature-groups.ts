@@ -1,6 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 
-type Scene = CollectionEntry<"commandDemos">["data"];
+type Scene = CollectionEntry<"features">["data"];
 export type FeatureCommand = { label: string; text: string; scene: Scene };
 export type FeatureGroup = {
   id: string;
@@ -25,7 +25,7 @@ const categories = {
 } satisfies Record<Scene["category"], { title: string; text: string }>;
 
 export async function getFeatureGroups(): Promise<FeatureGroup[]> {
-  const entries = (await getCollection("commandDemos")).sort(
+  const entries = (await getCollection("features")).sort(
     (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
   );
   return Object.entries(categories)

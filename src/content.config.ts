@@ -2,8 +2,8 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const commandDemos = defineCollection({
-  loader: glob({ pattern: "**/*.yaml", base: "./src/content/command-demos" }),
+const features = defineCollection({
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/features" }),
   schema: z.object({
     label: z.string().min(1),
     description: z.string().min(1),
@@ -25,4 +25,4 @@ const commandDemos = defineCollection({
   }),
 });
 
-export const collections = { commandDemos };
+export const collections = { features };
