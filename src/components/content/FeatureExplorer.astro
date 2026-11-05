@@ -61,11 +61,11 @@ const image = await getImage({
           >
             <span class="feature-explorer_title text-style-main">
               {command.label}
-              <code class="feature-explorer_query">{command.scene.query}</code>
             </span>
             <span class="feature-explorer_text text-style-small">
               {command.text}
             </span>
+            <code class="feature-explorer_query">{command.scene.query}</code>
           </button>
         ))}
       </div>
@@ -177,6 +177,34 @@ const image = await getImage({
       display: grid;
       gap: var(--space-5);
       align-items: center;
+      @media (width < 48rem) {
+        .feature-explorer_choices {
+          gap: 0.5rem;
+        }
+        .feature-explorer_choice {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas: "title" "description" "query";
+          gap: 0.5rem;
+          padding: 1rem;
+        }
+        .feature-explorer_title {
+          font-size: 1rem;
+          line-height: 1.35;
+        }
+        .feature-explorer_text {
+          font-size: 0.875rem;
+          line-height: 1.5;
+        }
+        .feature-explorer_query {
+          justify-self: start;
+          max-width: 100%;
+          padding: 0.25rem 0.5rem;
+          border-radius: var(--radius-small);
+          background: var(--background-3);
+          font-size: 0.8125rem;
+          line-height: 1.5;
+        }
+      }
       @media (width >= 64rem) {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
         gap: var(--space-7);
@@ -208,8 +236,10 @@ const image = await getImage({
       flex-direction: column;
     }
     .feature-explorer_choice {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "title query" "description description";
+      align-items: baseline;
       gap: var(--space-1);
       width: 100%;
       padding: var(--space-2) var(--space-3);
@@ -235,20 +265,21 @@ const image = await getImage({
       }
     }
     .feature-explorer_title {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 0.25rem 1rem;
+      grid-area: title;
+      min-width: 0;
       color: var(--text-2);
     }
     .feature-explorer_query {
+      grid-area: query;
+      min-width: 0;
       font-family: var(--mono-family);
       font-size: 0.75rem;
       color: var(--text-2);
       overflow-wrap: anywhere;
     }
     .feature-explorer_text {
+      grid-area: description;
+      min-width: 0;
       color: var(--text-2);
     }
     .feature-explorer_preview {
