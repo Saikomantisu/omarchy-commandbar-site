@@ -17,6 +17,8 @@ export const SITE_URL =
 /** BCP 47 locale tag used to format dates and numbers. */
 export const SITE_LOCALE = "en-US";
 
+export const SITE_IMAGE = "/og-image.png";
+
 /** Alt text for the default social image. */
 export const SITE_IMAGE_ALT =
   "Command Bar for Omarchy, a Spotlight-style launcher opened over the desktop.";

@@ -23,6 +23,7 @@ import {
   GITHUB_URL,
   INSTALL_COMMAND,
   SITE_DESCRIPTION,
+  SITE_IMAGE,
   SITE_NAME,
 } from "@/consts.ts";
 
@@ -34,7 +35,7 @@ const structuredData = {
   name: SITE_NAME,
   description: SITE_DESCRIPTION,
   url: new URL(Astro.url.pathname, Astro.site).href,
-  image: new URL(withBase("/og-image.jpg"), Astro.site).href,
+  image: new URL(withBase(SITE_IMAGE), Astro.site).href,
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Omarchy (Arch Linux)",
   softwareVersion: COMMAND_BAR_VERSION,
