@@ -16,6 +16,24 @@ Use `npm run astro -- dev status`, `npm run astro -- dev logs` and
 
 Run `npm run check` to validate, `npm run build` to build, and `npm run preview` to preview the build.
 
+## Deployment
+
+`.github/workflows/deploy.yml` checks, builds, and publishes the site to GitHub
+Pages on every push to `main`. It can also run manually from the Actions tab.
+In repository Settings → Pages, select **GitHub Actions** as the source.
+
+The production domain is `commandbar.ravinath.dev`. In repository Settings →
+Pages, set this as the custom domain and enable **Enforce HTTPS** once GitHub's
+certificate is ready. At the DNS provider for `ravinath.dev`, create a `CNAME`
+record named `commandbar` pointing to `saikomantisu.github.io`.
+
+The workflow reads the Pages host and base path from GitHub and builds HTTPS
+URLs. To reproduce the production build locally:
+
+```sh
+SITE_URL=https://commandbar.ravinath.dev npm run build
+```
+
 ## Customize
 
 Set site metadata in `src/consts.ts` and the `SITE_URL` environment variable to your production origin before deploying.

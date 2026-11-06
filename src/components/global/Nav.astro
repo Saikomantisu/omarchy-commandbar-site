@@ -1,4 +1,5 @@
 ---
+import { withBase } from "@/utils/paths.ts";
 import NavLink from "@/components/global/NavLink.astro";
 import { GITHUB_URL, SITE_NAME } from "@/consts.ts";
 
@@ -15,8 +16,14 @@ const { render = true, overlap = false } = Astro.props;
 {render && (
   <header class:list={["nav_wrap", overlap && "overlap"]}>
     <div class="nav_inner">
-      <a class="nav_logo" href="/" aria-label={SITE_NAME}>
-        <img class="nav_mark" src="/logo.png" width="493" height="493" alt="" />
+      <a class="nav_logo" href={withBase("/")} aria-label={SITE_NAME}>
+        <img
+          class="nav_mark"
+          src={withBase("/logo.png")}
+          width="493"
+          height="493"
+          alt=""
+        />
         <span class="nav_logo_text">Command Bar</span>
       </a>
       <button
@@ -30,15 +37,15 @@ const { render = true, overlap = false } = Astro.props;
       </button>
       <nav class="nav_menu" id="nav-menu" aria-label="Main">
         <ul class="nav_links">
-          <NavLink href="/#features">Features</NavLink>
-          <NavLink href="/#configure">Configure</NavLink>
-          <NavLink href="/#faq">FAQ</NavLink>
+          <NavLink href={withBase("/#features")}>Features</NavLink>
+          <NavLink href={withBase("/#configure")}>Configure</NavLink>
+          <NavLink href={withBase("/#faq")}>FAQ</NavLink>
           <NavLink href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
             GitHub <span aria-hidden="true">↗</span>
           </NavLink>
         </ul>
       </nav>
-      <a class="nav_install" href="/#install">
+      <a class="nav_install" href={withBase("/#install")}>
         Install <span aria-hidden="true">↗</span>
       </a>
     </div>

@@ -8,11 +8,11 @@ export const SITE_DESCRIPTION =
 /**
  * Canonical origin. Resolves canonical URLs, social images, and the sitemap.
  * Set the `SITE_URL` environment variable in your host's build settings to the
- * production origin; the localhost fallback is for development only.
+ * production origin to override the default domain.
  */
 export const SITE_URL =
   (typeof process !== "undefined" && process.env?.SITE_URL) ||
-  "http://localhost:4321";
+  "https://commandbar.ravinath.dev";
 
 /** BCP 47 locale tag used to format dates and numbers. */
 export const SITE_LOCALE = "en-US";

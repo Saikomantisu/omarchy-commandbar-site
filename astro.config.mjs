@@ -4,11 +4,14 @@ import sitemap from "@astrojs/sitemap";
 import { SITE_URL } from "./src/consts.ts";
 import { isNoindexRoute } from "./src/utils/seo.ts";
 
+const base = process.env.SITE_BASE_PATH || "/";
+
 export default defineConfig({
   site: SITE_URL,
+  base,
   integrations: [
     sitemap({
-      filter: (page) => !isNoindexRoute(new URL(page).pathname),
+      filter: (page) => !isNoindexRoute(new URL(page).pathname, base),
     }),
   ],
   fonts: [

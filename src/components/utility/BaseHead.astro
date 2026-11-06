@@ -1,4 +1,5 @@
 ---
+import { withBase } from "@/utils/paths.ts";
 import { Font } from "astro:assets";
 import {
   SITE_NAME,
@@ -22,11 +23,15 @@ const {
   noindex,
 } = Astro.props;
 
-const isNoindex = noindex ?? isNoindexRoute(Astro.url.pathname);
+const isNoindex =
+  noindex ?? isNoindexRoute(Astro.url.pathname, import.meta.env.BASE_URL);
 
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = new URL(image, Astro.site);
+const socialImage = new URL(
+  image.startsWith("/") ? withBase(image) : image,
+  Astro.site,
+);
 const isDefaultImage = image === DEFAULT_IMAGE;
 const ogLocale = SITE_LOCALE.replace("-", "_");
 ---
@@ -61,6 +66,11 @@ const ogLocale = SITE_LOCALE.replace("-", "_");
 <meta name="twitter:image" content={socialImage} />
 <meta name="twitter:image:alt" content={imageAlt} />
 
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
-<link rel="apple-touch-icon" href="/logo.png" />
+<link
+  rel="icon"
+  type="image/svg+xml"
+  href={withBase("/favicon.svg")}
+  sizes="any"
+/>
+<link rel="apple-touch-icon" href={withBase("/logo.png")} />
 <meta name="generator" content={Astro.generator} />
