@@ -8,6 +8,8 @@ type Props = HTMLAttributes<"div"> & {
   code?: string;
   /** Title above the code, such as a file path. Defaults to `Terminal` for a command. */
   label?: string;
+  /** Command name for copy analytics. */
+  copyEventCommand?: string;
   /** Code kind. A command shows a prompt and keeps to one line of text. */
   variant?: "command" | "plain";
 };
@@ -16,6 +18,7 @@ const {
   render = true,
   code,
   label,
+  copyEventCommand,
   variant = "command",
   class: className,
   ...rest
@@ -35,7 +38,7 @@ const title = label ?? (variant === "command" ? "Terminal" : undefined);
   >
     <div class="code-block_bar">
       <p class="code-block_label text-style-small">{title}</p>
-      <button class="code-block_copy text-style-small" type="button" hidden>
+      <button class="code-block_copy text-style-small" type="button" data-umami-event={copyEventCommand ? "copy" : undefined} data-umami-event-command={copyEventCommand} hidden>
         Copy
       </button>
     </div>

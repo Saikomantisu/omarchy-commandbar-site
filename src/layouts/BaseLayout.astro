@@ -24,6 +24,7 @@ const { theme = "inherit", overlap = false, ...seo } = Astro.props;
 <html lang="en" class:list={[theme !== "inherit" && `theme-${theme}`]}>
   <head>
     <BaseHead {...seo} />
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="40c5eefd-0e80-4ec9-ac4b-eb92449993fb"></script>
     <slot name="head" />
   </head>
   <body>

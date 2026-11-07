@@ -137,7 +137,7 @@ rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`
         else to install.
       </Paragraph>
     </ContentWrapper>
-    <CodeBlock code={INSTALL_COMMAND} />
+    <CodeBlock code={INSTALL_COMMAND} copyEventCommand="install" />
     <Grid medium={3}>
       <ContentWrapper>
         <Eyebrow>01</Eyebrow>
@@ -242,7 +242,7 @@ rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`
           </Paragraph>
         </AccordionItem>
         <AccordionItem heading="How do I remove it?">
-          <CodeBlock variant="plain" label="Terminal" code={removeCommands} />
+          <CodeBlock variant="plain" label="Terminal" code={removeCommands} copyEventCommand="remove" />
         </AccordionItem>
       </Accordion>
     </ContentWrapper>
