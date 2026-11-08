@@ -1,4 +1,6 @@
 ---
+import Star from "@lucide/astro/icons/star";
+import { siGithub } from "simple-icons";
 import { withBase } from "@/utils/paths.ts";
 import NavLink from "@/components/global/NavLink.astro";
 import { GITHUB_URL, SITE_NAME } from "@/consts.ts";
@@ -40,9 +42,12 @@ const { render = true, overlap = false } = Astro.props;
           <NavLink href={withBase("/#features")}>Features</NavLink>
           <NavLink href={withBase("/#configure")}>Configure</NavLink>
           <NavLink href={withBase("/#faq")}>FAQ</NavLink>
-          <NavLink href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-            GitHub <span aria-hidden="true">↗</span>
-          </NavLink>
+          <li><a class="nav_link nav_github" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub, 36 stars">
+            <svg class="nav_github_icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+              <path d={siGithub.path} />
+            </svg>
+            GitHub <span class="nav_stars" aria-hidden="true"><Star class="nav_star_icon" /> 36</span>
+          </a></li>
         </ul>
       </nav>
       <a class="nav_install" href={withBase("/#install")}>
@@ -217,7 +222,7 @@ const { render = true, overlap = false } = Astro.props;
     .nav_logo_text {
       display: none;
       font-family: var(--mono-family);
-      font-size: var(--text-small);
+      font-size: 0.875rem;
       font-weight: var(--primary-medium);
       letter-spacing: var(--letter-spacing-tight);
       white-space: nowrap;
@@ -237,7 +242,7 @@ const { render = true, overlap = false } = Astro.props;
       border-radius: var(--radius-small);
       background: var(--button-background);
       color: var(--button-text);
-      font-size: var(--text-small);
+      font-size: 0.875rem;
       font-weight: var(--primary-medium);
       line-height: 1.2;
       text-decoration: none;
@@ -320,7 +325,7 @@ const { render = true, overlap = false } = Astro.props;
       font-family: var(--mono-family);
       display: flex;
       flex-direction: column;
-      font-size: var(--text-small);
+      font-size: 0.875rem;
       font-weight: var(--primary-medium);
     }
 
@@ -347,6 +352,49 @@ const { render = true, overlap = false } = Astro.props;
           background: var(--background-3);
         }
       }
+    }
+
+    .nav_github_icon {
+      width: 1.1em;
+      height: 1.1em;
+      flex: none;
+    }
+
+    .nav_github {
+      gap: 0.5em;
+      padding: 0.55em 0.75em;
+      border: var(--border-width) solid var(--border);
+      background: var(--background-3);
+      color: var(--text);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        border-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      @media (hover: hover) {
+        &:hover {
+          border-color: var(--text-2);
+          background: color-mix(in lab, var(--background-3) 85%, var(--text));
+        }
+      }
+    }
+
+    .nav_star_icon {
+      width: 1em;
+      height: 1em;
+    }
+
+    .nav_stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      margin-left: 0.15em;
+      padding-left: 0.65em;
+      border-left: var(--border-width) solid var(--border);
+      color: var(--text-2);
+      font-size: 0.9em;
+      line-height: 1;
+      white-space: nowrap;
     }
   }
 </style>

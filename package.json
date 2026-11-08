@@ -17,7 +17,9 @@
   "dependencies": {
     "@astrojs/check": "^0.9.12",
     "@astrojs/sitemap": "^3.7.4",
+    "@lucide/astro": "^1.70.0",
     "astro": "^7.4.4",
+    "simple-icons": "^16.37.0",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
