@@ -42,11 +42,11 @@ const { render = true, overlap = false } = Astro.props;
           <NavLink href={withBase("/#features")}>Features</NavLink>
           <NavLink href={withBase("/#configure")}>Configure</NavLink>
           <NavLink href={withBase("/#faq")}>FAQ</NavLink>
-          <li><a class="nav_link nav_github" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub, 36 stars">
+          <li><a class="nav_link nav_github" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" data-repository-api={`https://api.github.com/repos${new URL(GITHUB_URL).pathname}`}>
             <svg class="nav_github_icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
               <path d={siGithub.path} />
             </svg>
-            GitHub <span class="nav_stars" aria-hidden="true"><Star class="nav_star_icon" /> 36</span>
+            GitHub <span class="nav_stars" hidden><Star class="nav_star_icon" aria-hidden="true" /> <span class="nav_star_count"></span> <span class="sr-only">stars</span></span>
           </a></li>
         </ul>
       </nav>
@@ -77,6 +77,21 @@ const { render = true, overlap = false } = Astro.props;
 </noscript>
 
 <script>
+  document.querySelectorAll<HTMLAnchorElement>(".nav_github").forEach(async (link) => {
+    const stars = link.querySelector<HTMLElement>(".nav_stars");
+    const count = link.querySelector<HTMLElement>(".nav_star_count");
+    if (!stars || !count || !link.dataset.repositoryApi) return;
+
+    try {
+      const response = await fetch(link.dataset.repositoryApi);
+      if (!response.ok) return;
+      const repository = await response.json();
+      if (!Number.isSafeInteger(repository.stargazers_count) || repository.stargazers_count < 0) return;
+      count.textContent = repository.stargazers_count.toLocaleString();
+      stars.hidden = false;
+    } catch {}
+  });
+
   document.querySelectorAll<HTMLElement>(".nav_wrap").forEach((nav) => {
     const toggle = nav.querySelector<HTMLButtonElement>(".nav_toggle");
     const menu = nav.querySelector<HTMLElement>(".nav_menu");
@@ -395,6 +410,10 @@ const { render = true, overlap = false } = Astro.props;
       font-size: 0.9em;
       line-height: 1;
       white-space: nowrap;
+
+      &[hidden] {
+        display: none;
+      }
     }
   }
 </style>
