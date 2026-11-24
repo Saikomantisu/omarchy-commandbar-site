@@ -1,0 +1,16 @@
+label: Bookmarks
+description: Open a bookmark from your default browser with b. Letters can be spread out.
+category: find-launch
+order: 35
+query: b gh iss
+rows:
+  - title: GitHub Issues
+    subtitle: github.com/issues · Work
+    icon: 󰃀
+    group: Firefox bookmarks
+    action: Open
+  - title: Omarchy issues
+    subtitle: github.com/basecamp/omarchy/issues · Linux
+    icon: 󰃀
+    group: Firefox bookmarks
+    action: Open

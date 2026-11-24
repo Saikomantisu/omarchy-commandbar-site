@@ -97,7 +97,7 @@ rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`
   </Section>
 
   <!-- features -->
-  <Section id="features" paddingBottom="none">
+  <Section id="features" paddingBottom="small">
     <ContentWrapper variant="auto-width">
       <div>
         <Eyebrow>What it does</Eyebrow>
@@ -107,15 +107,15 @@ rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`
       </div>
       <Paragraph slot="column2" maxWidth={36} class="color-faded">
         Type an app name or calculation directly. Use prefixes such as
-        <Kbd>w</Kbd> for windows, <Kbd>:</Kbd> for emoji and <Kbd>kill</Kbd>
-        for processes. Type <Kbd>?</Kbd> for help and examples.
+        <Kbd>w</Kbd> for windows, <Kbd>b</Kbd> for bookmarks, <Kbd>:</Kbd>
+        for emoji and <Kbd>kill</Kbd> for processes. Type <Kbd>?</Kbd> for help and examples.
       </Paragraph>
     </ContentWrapper>
   </Section>
   {featureGroups.map((group, index) => (
     <Section
       id={group.id}
-      paddingTop={index === 0 ? "small" : "large"}
+      paddingTop={index === 0 ? "none" : "large"}
       paddingBottom="none"
     >
       <FeatureExplorer
@@ -216,7 +216,8 @@ rm -rf ~/.cache/omarchy-commandbar ~/.config/omarchy/extensions/commandbar.json`
             Currency conversions fetch exchange rates when needed, using a daily
             cache. Web searches open in your browser. AI prompts go to the agent
             or chat website you select. File search reads names, not file
-            contents; the bar stores its cache locally.
+            contents, and bookmarks are read from your browser's profile on
+            your machine. The bar stores its cache locally.
           </Paragraph>
         </AccordionItem>
         <AccordionItem heading="What does the ai command do?">

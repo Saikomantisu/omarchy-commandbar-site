@@ -3,7 +3,7 @@ export const SITE_NAME = "Command Bar for Omarchy";
 
 /** Fallback meta description for pages that don't set their own. */
 export const SITE_DESCRIPTION =
-  "A Spotlight-style command bar for Omarchy. Launch apps, switch windows, search file names, calculate and run keyword commands with Super + Period.";
+  "A Spotlight-style command bar for Omarchy. Launch apps, switch windows, search file names and bookmarks, calculate and run keyword commands with Super + Period.";
 
 /**
  * Canonical origin. Resolves canonical URLs, social images, and the sitemap.
